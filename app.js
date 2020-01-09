@@ -12,9 +12,8 @@ app.use(express.json());
 // JSON.parse convert json to javascript object
 let persons = JSON.parse(fs.readFileSync(`${__dirname}/data/persons.json`));
 
-// GET REQUEST
-app.get('/api/v1/persons', (req, res) => {
-  // sending data to browser with status code and convert data to json
+const getPersons = (req, res) => {
+  // sending data to browser with status code and convert data to json 
   res.status(200).json({
     status: 'success',
     results: persons.length,
@@ -22,8 +21,8 @@ app.get('/api/v1/persons', (req, res) => {
       persons
     }
   });
-});
-app.get('/api/v1/persons/:id', (req, res) => {
+};
+const getPersonById = (req, res) => {
   const idParam = req.params.id;
   // find returns specific elements if it returns true
   const person = persons.find((person) => {
@@ -45,10 +44,8 @@ app.get('/api/v1/persons/:id', (req, res) => {
       }
     })
   }
-});
-
-// POST REQUEST
-app.post('/api/v1/persons', (req, res) => {
+};
+const createPerson = (req, res) => {
   let genID = persons.length;
   const newPerson = Object.assign({ id: genID }, req.body);
   persons.push(newPerson);
@@ -65,7 +62,18 @@ app.post('/api/v1/persons', (req, res) => {
       }
     });
   });
-});
+};
+
+// We Specify common routes for each methods to avoid redundant
+// Routes
+app
+  .route('/api/v1/persons')
+  .get(getPersons)
+  .post(createPerson);
+app
+  .route('/api/v1/persons/:id')
+  .get(getPersonById);
+
 
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
