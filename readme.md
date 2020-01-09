@@ -16,3 +16,7 @@ Paste to insomnia as JSON body
 	}
 }
 ```
+
+#### Running
+- npm install
+- npm run dev
