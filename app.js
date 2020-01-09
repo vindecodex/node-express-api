@@ -29,12 +29,22 @@ app.get('/api/v1/persons/:id', (req, res) => {
   const person = persons.find((person) => {
     return person.id == idParam
   });
-  res.status(200).json({
-    status: 'success',
-    data: {
-      person
-    }
-  });
+  // Error Trapping
+  if (person) {
+    res.status(200).json({
+      status: 'success',
+      data: {
+        person
+      }
+    });
+  } else {
+    res.status(404).json({
+      status: 'fail',
+      data: {
+        error: `Person with ID: ${idParam} not found`
+      }
+    })
+  }
 });
 
 // POST REQUEST
