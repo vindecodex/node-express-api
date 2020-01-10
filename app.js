@@ -3,8 +3,6 @@ const fs = require('fs');
 
 const app = express();
 
-// PORT
-const port = 9000;
 
 // MIDDLEWARE
 app.use(express.json());
@@ -96,8 +94,4 @@ app
   .patch(updatePerson)
   .delete(deletePerson);
 
-
-
-app.listen(port, () => {
-  console.log(`App running on port ${port}`);
-})
+module.exports = app;
