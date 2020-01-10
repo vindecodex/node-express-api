@@ -8,8 +8,8 @@ app.use(express.json());
 // Creating our own MIDDLEWARE
 app.use((req,res,next) => {
   console.log(
+    `${req.method} - `,
     req.url,
-    req.method,
     ` - ${res.statusCode}`
   );
   next();
