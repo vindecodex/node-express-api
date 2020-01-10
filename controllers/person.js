@@ -3,40 +3,23 @@ const fs = require('fs');
 // JSON.parse convert json to javascript object
 let persons = JSON.parse(fs.readFileSync(`${__dirname}/../data/persons.json`));
 
-// Handlers or Controllers
-exports.getPersons = (req, res) => {
-  // sending data to browser with status code and convert data to json 
-  res.status(200).json({
-    status: 'success',
-    results: persons.length,
-    data: {
-      persons
-    }
-  });
-};
-exports.getPersonById = (req, res) => {
-  const idParam = req.params.id;
-  // find returns specific elements if it returns true
+// Middleware
+// With the help of Middleware query params we can check if val is existing
+exports.checkPersonID = (req, res, next, val) => {
+  // get the specific elements if it equals to what we are looking for
   const person = persons.find((person) => {
-    return person.id == idParam
+    return person.id == val
   });
-  // Error Trapping
-  if (person) {
-    res.status(200).json({
-      status: 'success',
-      data: {
-        person
-      }
-    });
-  } else {
-    res.status(404).json({
-      status: 'fail',
-      data: {
-        error: `Person with ID: ${idParam} not found`
-      }
+  if (!person) {
+    return res.status(404).json({
+      status: 'not found',
+      message: `person with id ${val} not found`
     })
   }
-};
+  // we dont need to forget to add next() if we are creating middlewares
+  next();
+}
+// Handlers or Controllers
 exports.createPerson = (req, res) => {
   let genID = persons.length;
   const newPerson = Object.assign({ id: genID }, req.body);
@@ -54,18 +37,26 @@ exports.createPerson = (req, res) => {
       }
     });
   });
-};
-exports.updatePerson = (req, res) => {
-  let genID = req.params.id;
-  res.status(201).json({
+}
+exports.getPersons = (req, res) => {
+  // sending data to browser with status code and convert data to json 
+  res.status(200).json({
+    status: 'success',
+    results: persons.length,
+    data: {
+      persons
+    }
+  });
+}
+exports.getPersonById = (req, res) => {
+  res.status(200).json({
     status: 'success',
     data: {
-      message: 'need to add logic'
+      person
     }
-  })
-};
-exports.deletePerson = (req, res) => {
-  let genID = req.params.id;
+  });
+}
+exports.updatePerson = (req, res) => {
   res.status(201).json({
     status: 'success',
     data: {
@@ -73,4 +64,11 @@ exports.deletePerson = (req, res) => {
     }
   })
 }
-
+exports.deletePerson = (req, res) => {
+  res.status(201).json({
+    status: 'success',
+    data: {
+      message: 'need to add logic'
+    }
+  })
+}
