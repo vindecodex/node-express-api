@@ -84,12 +84,15 @@ const deletePerson = (req, res) => {
 
 // We Specify common routes for each methods to avoid redundant
 // Routes
-app
-  .route('/api/v1/persons')
+// Now we use Mounting Routes
+const personRoutes = express.Router();
+app.use('/api/v1/persons', personRoutes);
+personRoutes
+  .route('/')
   .get(getPersons)
   .post(createPerson);
-app
-  .route('/api/v1/persons/:id')
+personRoutes
+  .route('/:id')
   .get(getPersonById)
   .patch(updatePerson)
   .delete(deletePerson);
