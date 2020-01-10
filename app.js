@@ -12,6 +12,7 @@ app.use(express.json());
 // JSON.parse convert json to javascript object
 let persons = JSON.parse(fs.readFileSync(`${__dirname}/data/persons.json`));
 
+// Handlers or Controllers
 const getPersons = (req, res) => {
   // sending data to browser with status code and convert data to json 
   res.status(200).json({
@@ -63,6 +64,25 @@ const createPerson = (req, res) => {
     });
   });
 };
+const updatePerson = (req, res) => {
+  let genID = req.params.id;
+  res.status(201).json({
+    status: 'success',
+    data: {
+      message: 'need to add logic'
+    }
+  })
+};
+const deletePerson = (req, res) => {
+  let genID = req.params.id;
+  res.status(201).json({
+    status: 'success',
+    data: {
+      message: 'need to add logic'
+    }
+  })
+}
+
 
 // We Specify common routes for each methods to avoid redundant
 // Routes
@@ -72,7 +92,10 @@ app
   .post(createPerson);
 app
   .route('/api/v1/persons/:id')
-  .get(getPersonById);
+  .get(getPersonById)
+  .patch(updatePerson)
+  .delete(deletePerson);
+
 
 
 app.listen(port, () => {
