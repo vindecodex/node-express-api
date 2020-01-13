@@ -9,7 +9,9 @@ mongoose.connect(DB, {
   useCreateIndex: true,
   useFindAndModify: false,
   useUnifiedTopology: true
-}).then(con => console.log('Database Connection Succeed!'));
+})
+  .then(() => console.log('Database Connection Succeed!'))
+  .catch(err => console.log(err));
 
 // PORT
 const port = process.env.PORT || 9000;
