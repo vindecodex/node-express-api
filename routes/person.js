@@ -7,10 +7,13 @@ const router = express.Router();
 
 // Middleware Param
 router.param('id', personController.checkPersonID);
+const chainedMiddleware = (req, res, next) => {
+  console.log('Im a chained middleware on get method in route /');
+};
 
 router
   .route('/')
-  .get(personController.getPersons)
+  .get(chainedMiddleware, personController.getPersons)
   .post(personController.createPerson);
 // We Specify common routes for each methods to avoid redundant
 router
