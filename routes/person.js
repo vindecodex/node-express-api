@@ -9,6 +9,7 @@ const router = express.Router();
 router.param('id', personController.checkPersonID);
 const chainedMiddleware = (req, res, next) => {
   console.log('Im a chained middleware on get method in route /');
+  next();
 };
 
 router
