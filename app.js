@@ -7,12 +7,12 @@ const app = express();
 app.use(express.json());
 // Creating our own MIDDLEWARE
 app.use((req,res,next) => {
-  console.log(
-    `${req.method} - `,
-    req.url,
-    ` - ${res.statusCode}`
-  );
-  next();
+	console.log(
+		`${req.method} - `,
+		req.url,
+		` - ${res.statusCode}`
+	);
+	next();
 })
 
 app.use('/api/v1/users', userRoutes);
