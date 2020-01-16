@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const app = require('./app');
 
 // Database Connection
-const DB = process.env.DATABASE
+const DB = process.env.DATABASE;
 mongoose.connect(DB, {
-  useNewUrlParser: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true
+	useNewUrlParser: true,
+	useCreateIndex: true,
+	useFindAndModify: false,
+	useUnifiedTopology: true
 })
 	.then(() => console.log('Database Connection Succeed!'))
 	.catch(err => console.log(err));
@@ -16,5 +16,5 @@ mongoose.connect(DB, {
 // PORT
 const port = process.env.PORT || 9000;
 app.listen(port, () => {
-  console.log(`App running on port ${port}`);
-})
+	console.log(`App running on port ${port}`);
+});
