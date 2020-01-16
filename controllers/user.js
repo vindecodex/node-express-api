@@ -1,4 +1,5 @@
 const fs = require('fs');
+const userModel = require('./../models/user');
 
 // JSON.parse convert json to javascript object
 let users = JSON.parse(fs.readFileSync(`${__dirname}/../data/users.json`));
