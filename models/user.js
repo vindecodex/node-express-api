@@ -38,9 +38,9 @@ const testUser = new User({
 	securityNumber: 11111
 });
 testUser.save()
-.then(doc => {
-	console.log(doc);
-})
-.catch(err =>  console.log(err));
+	.then(doc => {
+		console.log(doc);
+	})
+	.catch(err =>  console.log(err));
 
 module.exports = User;
