@@ -1,25 +1,6 @@
 const fs = require('fs');
 const userModel = require('./../models/user');
 
-// JSON.parse convert json to javascript object
-let users = JSON.parse(fs.readFileSync(`${__dirname}/../data/users.json`));
-
-// Middleware
-// With the help of Middleware query params we can check if val is existing
-exports.checkUserID = (req, res, next, val) => {
-  // get the specific elements if it equals to what we are looking for
-  const user = users.find((user) => {
-    return user.id == val
-  });
-  if (!user) {
-    return res.status(404).json({
-      status: 'not found',
-      message: `user with id ${val} not found`
-    })
-  }
-  // we dont need to forget to add next() if we are creating middlewares
-  next();
-}
 // Handlers or Controllers
 exports.createUser = (req, res) => {
   let genID = users.length;
