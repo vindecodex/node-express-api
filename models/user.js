@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
 		required: [true, 'Gender is Required']
 	},
 	securityNumber: {
-		type: Number,
+		type: String,
 		required: [true, 'Must have a Security Number'],
 		unique: true
 	},
@@ -29,18 +29,5 @@ const UserSchema = new mongoose.Schema({
 // Created model
 // Model first letter must be Capital
 const User = mongoose.model('User', UserSchema);
-
-// Passing Data to DB
-const testUser = new User({
-	name: 'Vincent Villaluna',
-	age: 23,
-	gender: 'Male',
-	securityNumber: 11111
-});
-testUser.save()
-	.then(doc => {
-		console.log(doc);
-	})
-	.catch(err =>  console.log(err));
 
 module.exports = User;
