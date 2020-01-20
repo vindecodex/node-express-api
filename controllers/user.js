@@ -22,11 +22,39 @@ exports.createUser = async (req, res) => {
 exports.getUsers = async (req, res) => {
 	try {
 		// Advance API filtering
-		const objQuery = req.query
+		const objQuery = {...req.query};
+		// removing query sort,page etc
+		const excludedFields = ['page', 'sort', 'limit', 'fields'];
+		for ( index in excludedFields ) {
+			delete objQuery[excludedFields[index]];
+		}
+
+		// we are not going to pass excludedField
 		let objQueryStr = JSON.stringify(objQuery);
+
 		// allow to use mongo greater than equal less than equal with help of RegExpression
+		// sample: localhost:9000/api/v1/users?age[lte]=20
 		objQueryStr = objQueryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-		const users = await User.find(JSON.parse(objQueryStr));
+
+		// sort, page, limit etc must not be inside objQueryStr
+		let query = User.find(JSON.parse(objQueryStr));
+
+		// Sorting
+		// sample: localhost:9000/api/v1/users?sort=age&age[lte]=100 ASCENDING ORDER
+		// or localhost:9000/api/v1/users?sort=age&age[lte]=-100 DESCENDING ORDER
+		
+		if (req.query.sort) {
+			// so that we can sort multiple
+			// example: localhost:9000/api/v1/users?sort=age,name just add - for DESCENDING ORDER
+			const sortBy = req.query.sort.split(',').join(' ');
+			query = query.sort(sortBy);
+		} else {
+			// for default it will be DESCENDING ORDER by id if no sort was given
+			query = query.sort('-_id');
+		}
+
+		// Query Execution
+		const users = await query;
 		res.status(200).json({
 			status: 'success',
 			results: users.length,
