@@ -24,6 +24,7 @@ exports.getUsers = async (req, res) => {
 		// Advance API filtering
 		const objQuery = req.query
 		let objQueryStr = JSON.stringify(objQuery);
+		// allow to use mongo greater than equal less than equal with help of RegExpression
 		objQueryStr = objQueryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 		const users = await User.find(JSON.parse(objQueryStr));
 		res.status(200).json({
