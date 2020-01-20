@@ -23,7 +23,9 @@ exports.getUsers = async (req, res) => {
 	try {
 		// Advance API filtering
 		const objQuery = req.query
-		const users = await User.find(objQuery);
+		let objQueryStr = JSON.stringify(objQuery);
+		objQueryStr = objQueryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+		const users = await User.find(JSON.parse(objQueryStr));
 		res.status(200).json({
 			status: 'success',
 			results: users.length,
