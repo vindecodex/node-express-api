@@ -25,17 +25,16 @@ exports.getUsers = async (req, res) => {
 		// removing query sort,page etc
 		const excludedFields = ['page', 'sort', 'limit', 'fields'];
 		for ( index in excludedFields ) {
+			// we are not going to pass excludedField now we delete them
 			delete objQuery[excludedFields[index]];
 		}
 
-		// we are not going to pass excludedField
 		let objQueryStr = JSON.stringify(objQuery);
 
 		// allow to use mongo greater than equal less than equal with help of RegExpression
 		// sample: localhost:9000/api/v1/users?age[lte]=20
 		objQueryStr = objQueryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 
-		// sort, page, limit etc must not be inside objQueryStr
 		let query = User.find(JSON.parse(objQueryStr));
 
 		// Sorting
