@@ -35,6 +35,7 @@ exports.getUsers = async (req, res) => {
 		// sample: localhost:9000/api/v1/users?age[lte]=20
 		objQueryStr = objQueryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
 
+		// now query can be chained to any mongoose function
 		let query = User.find(JSON.parse(objQueryStr));
 
 		// Sorting
@@ -52,6 +53,7 @@ exports.getUsers = async (req, res) => {
 		}
 
 		// Query Execution
+		// after running all the chained function
 		const users = await query;
 		res.status(200).json({
 			status: 'success',
