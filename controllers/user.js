@@ -52,6 +52,17 @@ exports.getUsers = async (req, res) => {
 			query = query.sort('-_id');
 		}
 
+		// Limiting to avoid large bandwidth on every request 
+		if (req.query.limit) {
+			// it  will display specific fields
+			// example:
+			const limit = req.query.limit.split(',').join(' ');
+			query = query.select(limit);
+		} else {
+			// set difault fields to be display
+			// default will be all fields will be displayed but will leave this else here for idea
+		}
+
 		// Query Execution
 		// after running all the chained function
 		const users = await query;
