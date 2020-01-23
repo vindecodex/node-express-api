@@ -17,6 +17,8 @@ Paste to insomnia as JSON body
 }
 ```
 
+Try to clone the old version of this repository because now, MongoDB atlas is the data that is used for this project :)
+
 #### Running
 - npm install
 - npm run dev
