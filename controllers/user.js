@@ -52,17 +52,30 @@ exports.getUsers = async (req, res) => {
 			query = query.sort('-_id');
 		}
 
-		// Limiting to avoid large bandwidth on every request 
-		if (req.query.limit) {
+		// Limiting fields to avoid large bandwidth on every request 
+		if (req.query.fields) {
 			// it  will display specific fields
-			// example:
-			const limit = req.query.limit.split(',').join(' ');
-			query = query.select(limit);
+			// example: localhost:9000/api/v1/users?fields=name,age
+			const fields = req.query.fields.split(',').join(' ');
+			query = query.select(fields);
 		} else {
 			// set difault fields to be display
 			// default will be all fields will be displayed but will leave this else here for idea
+			// use -fieldname to exclude a field
+			// example: localhost:9000/api/v1/users?fields=-name
 		}
 
+		// Pagination
+		const page = req.query.page * 1 || 1;
+		const limit = req.query.limit * 1 || 100;
+		const skip = (page *  limit) - limit;
+		query = query.skip(skip).limit(limit);
+		if (req.query.page) {
+			const userCount = await User.countDocuments();
+			if (skip >= userCount) {
+				throw new Error('Page not Exist');
+			}
+		}
 		// Query Execution
 		// after running all the chained function
 		const users = await query;
