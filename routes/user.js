@@ -5,6 +5,12 @@ const userController = require('../controllers/user');
 // Now we use Mounting Routes
 const router = express.Router();
 
+// Using Aliases with the help of Middlewares chaining
+// creating a middleware getTop5Oldest which will be the one to manipulate our request and still using the getUsers
+router
+	.route('/top5old')
+	.get(userController.getTopOldest, userController.getUsers);
+
 router
 	.route('/')
 	.get(userController.getUsers)
