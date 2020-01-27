@@ -1,4 +1,5 @@
 const User = require('./../models/user');
+const APIFeatures = require('./../utils/apiFeatures.js');
 
 // Handlers or Controllers
 // Creating Document
@@ -28,65 +29,10 @@ exports.getTopOldest = (req, res, next) => {
 // Reading Documents
 exports.getUsers = async (req, res) => {
 	try {
-		// Advance API filtering
-		const objQuery = {...req.query};
-		// removing query sort,page etc
-		const excludedFields = ['page', 'sort', 'limit', 'fields'];
-		for ( index in excludedFields ) {
-			// we are not going to pass excludedField now we delete them
-			delete objQuery[excludedFields[index]];
-		}
-
-		let objQueryStr = JSON.stringify(objQuery);
-
-		// allow to use mongo greater than equal less than equal with help of RegExpression
-		// sample: localhost:9000/api/v1/users?age[lte]=20
-		objQueryStr = objQueryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-
-		// now query can be chained to any mongoose function
-		let query = User.find(JSON.parse(objQueryStr));
-
-		// Sorting
-		// sample: localhost:9000/api/v1/users?sort=age&age[lte]=100 ASCENDING ORDER
-		// or localhost:9000/api/v1/users?sort=age&age[lte]=-100 DESCENDING ORDER
-		
-		if (req.query.sort) {
-			// so that we can sort multiple
-			// example: localhost:9000/api/v1/users?sort=age,name just add - for DESCENDING ORDER
-			const sortBy = req.query.sort.split(',').join(' ');
-			query = query.sort(sortBy);
-		} else {
-			// for default it will be DESCENDING ORDER by id if no sort was given
-			query = query.sort('-_id');
-		}
-
-		// Limiting fields to avoid large bandwidth on every request 
-		if (req.query.fields) {
-			// it  will display specific fields
-			// example: localhost:9000/api/v1/users?fields=name,age
-			const fields = req.query.fields.split(',').join(' ');
-			query = query.select(fields);
-		} else {
-			// set difault fields to be display
-			// default will be all fields will be displayed but will leave this else here for idea
-			// use -fieldname to exclude a field
-			// example: localhost:9000/api/v1/users?fields=-name
-		}
-
-		// Pagination
-		const page = req.query.page * 1 || 1;
-		const limit = req.query.limit * 1 || 100;
-		const skip = (page *  limit) - limit;
-		query = query.skip(skip).limit(limit);
-		if (req.query.page) {
-			const userCount = await User.countDocuments();
-			if (skip >= userCount) {
-				throw new Error('Page not Exist');
-			}
-		}
 		// Query Execution
-		// after running all the chained function
-		const users = await query;
+		// new instance for APIFeatures
+		const features = new APIFeatures(User.find(), req.query).filter().sort().limitFields().paginate();
+		const users = await features.query;
 		res.status(200).json({
 			status: 'success',
 			results: users.length,
