@@ -17,6 +17,14 @@ exports.createUser = async (req, res) => {
 		})
 	}
 }
+
+// Middleware
+exports.getTopOldest = (req, res, next) => {
+	req.query.limit = '5'; // limit the results to 5
+	req.query.sort = '-age'; // it will sort to largest age
+	req.query.fields = 'name,age'; // it will only display name and age
+	next(); // remember when creating a middleware dont forget the next() function from very end
+}
 // Reading Documents
 exports.getUsers = async (req, res) => {
 	try {
