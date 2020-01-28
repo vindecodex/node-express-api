@@ -11,6 +11,9 @@ router
 	.route('/top5old')
 	.get(userController.getTopOldest, userController.getUsers);
 
+// Aggregation Pipeline (Matching and Grouping - provided by mongo but will help us with mongoose accessing it)
+router.route('/user-stats').get(userController.userStats);
+
 router
 	.route('/')
 	.get(userController.getUsers)
