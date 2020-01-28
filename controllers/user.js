@@ -100,3 +100,44 @@ exports.deleteUser = async (req, res) => {
 		});
 	}
 }
+
+// Aggregation Pipeline (Matching and Grouping - provided by mongo but will help us with mongoose accessing it)
+exports.userStats = async (req, res) => {
+	try {
+		const stats = await User.aggregate([
+			{
+				$match: { age: { $gte: 20 } },
+			},
+			{
+				$group: {
+					_id: '$gender' , // we can also group this with null
+					// you can specifiy your own key here
+					totalUsers: { $sum: 1 }, // it means to increment each iteration of row
+					averageAge: { $avg: '$age' }, // $avg is a mongoose aggregation pipeline while $age is our column on db
+					youngestAge: { $min: '$age' },
+					oldestAge: { $max: '$age' }
+				}
+			},
+			{
+				// if we continue from below the keys we are now going to use is keys from above [_id, totalUsers, averageAge..etc]
+				$sort: { averageAge: -1 } // use 1 for ASC and -1 for DESC
+			},
+			// we can repeat match multiple times but using above keys after grouping
+			// {
+				// $match: { _id: { $ne: 'Female' } },
+			// }
+		]);
+		res.status(200).json({
+			status: 'success',
+			data: {
+				stats
+			}
+		});
+
+	} catch(err) {
+		res.status(404).json({
+			status: 'fail',
+			message: err
+		});
+	}
+}
