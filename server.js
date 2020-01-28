@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const app = require('./app');
 
 // Database Connection
-const DB = process.env.DATABASE;
+const DB = process.env.LOCAL_DATABASE;
 mongoose.connect(DB, {
 	useNewUrlParser: true,
 	useCreateIndex: true,
